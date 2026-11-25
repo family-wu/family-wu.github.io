@@ -136,7 +136,7 @@ textarea{width:100%;font:1.05rem "Noto Sans TC",sans-serif;padding:14px;border-r
     <p class="err" id="pwErr"></p>
     <button class="line-btn" id="lineBtn"><svg viewBox="0 0 48 48"><path fill="#fff" d="M24 6C12.4 6 3 13.6 3 23c0 8.4 7.5 15.4 17.6 16.8.7.2 1.6.5 1.9 1 .2.5.1 1.2.1 1.7l-.3 1.8c-.1.5-.4 2.1 1.8 1.1 2.3-.9 12.2-7.2 16.6-12.3C43.7 29.8 45 26.6 45 23 45 13.6 35.6 6 24 6z"/><path fill="#06c755" d="M14 27.5h-3.5a1 1 0 0 1-1-1v-7a1 1 0 0 1 2 0v6H14a1 1 0 0 1 0 2zm3.5-1a1 1 0 0 1-2 0v-7a1 1 0 0 1 2 0zm9 0a1 1 0 0 1-1.8.6L21 22.6v3.9a1 1 0 0 1-2 0v-7a1 1 0 0 1 1.8-.6l3.7 5v-4.4a1 1 0 0 1 2 0zm6.5-5h-2.5v1.5H33a1 1 0 0 1 0 2h-2.5V25H33a1 1 0 0 1 0 2h-3.5a1 1 0 0 1-1-1v-7a1 1 0 0 1 1-1H33a1 1 0 0 1 0 2z"/></svg>用 LINE 登入</button>
     <p class="note" id="lockNote"></p>
-    <button class="linklike" id="pwToggle" type="button">沒有 LINE？改用家族密碼</button>
+    <button class="linklike" id="pwToggle" type="button">或是 用家族密碼登入</button>
     <div class="pwbox" id="pwBox" hidden>
       <label for="pwIn">家族密碼</label>
       <input id="pwIn" type="password" autocomplete="current-password" placeholder="家族密碼">
@@ -256,7 +256,7 @@ var WHO=['阿公','阿嬤','爸爸','姑姑','叔叔','Lucy','姿穎','Sunny','S
 $('pwWho').innerHTML=WHO.map(function(w){return'<button class="btn" type="button" aria-pressed="false" data-who="'+w+'">'+w+'</button>'}).join('');
 $('pwWho').addEventListener('click',function(e){var b=e.target.closest('[data-who]');if(!b)return;pickName=b.dataset.who;$('pwName').value='';$$('#pwWho [data-who]').forEach(function(x){x.setAttribute('aria-pressed',x===b?'true':'false')})});
 $('pwName').addEventListener('input',function(){if(this.value.trim()){pickName='';$$('#pwWho [data-who]').forEach(function(x){x.setAttribute('aria-pressed','false')})}});
-$('pwToggle').onclick=function(){var open=$('pwBox').hidden;$('pwBox').hidden=!open;this.textContent=open?'收起家族密碼':'沒有 LINE？改用家族密碼';if(open)$('pwIn').focus()};
+$('pwToggle').onclick=function(){var open=$('pwBox').hidden;$('pwBox').hidden=!open;this.textContent=open?'收起家族密碼':'或是 用家族密碼登入';if(open)$('pwIn').focus()};
 $('pwShow').onclick=function(){var on=$('pwIn').type==='password';$('pwIn').type=on?'text':'password';this.textContent=on?'隱藏密碼':'顯示密碼';this.setAttribute('aria-pressed',on?'true':'false')};
 $('pwGo').onclick=function(){var pw=$('pwIn').value.trim(),name=$('pwName').value.trim()||pickName;
   if(!pw){$('pwErr').textContent='請輸入家族密碼';return}
