@@ -13,6 +13,7 @@
 <meta name="apple-mobile-web-app-title" content="吳家相簿">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap">
+<script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 <style>
 :root{--bg:#fffdf9;--ink:#33231f;--soft:#6e5a55;--apricot:#ffd8c6;--sky:#cfeaf5;--coral:#d23a2a;--paper:#fff;--line:#eadbd2;font-size:20px}
 html.big{font-size:25px}
@@ -40,10 +41,21 @@ main{padding:10px 14px 30px;max-width:1000px;margin:0 auto}
 .lock img{width:120px;height:120px;border-radius:28px;box-shadow:0 8px 20px rgba(80,40,30,.2)}
 .lock h1{margin:18px 0 6px}
 .lock p{margin:0 0 18px;color:var(--soft)}
-.lock input{width:100%;max-width:360px;font:900 1.4rem "Noto Sans TC",sans-serif;text-align:center;padding:14px;border-radius:16px;border:3px solid var(--line);margin-bottom:14px;background:var(--paper);color:var(--ink)}
+.line-btn{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;max-width:360px;margin:0 auto;min-height:72px;padding:12px 20px;border:0;border-radius:20px;background:#06c755;color:#fff;font:900 1.25rem "Noto Sans TC",sans-serif;cursor:pointer;box-shadow:0 6px 0 #04913e}
+.line-btn:active{transform:translateY(4px);box-shadow:0 2px 0 #04913e}
+.line-btn svg{width:34px;height:34px;flex:none}
+.lock .note{font-size:.85rem;margin-top:14px}
+.linklike{display:block;margin:18px auto 0;background:none;border:0;color:var(--ink);font:700 1rem "Noto Sans TC",sans-serif;text-decoration:underline;min-height:48px;cursor:pointer}
+.pwbox{max-width:380px;margin:16px auto 0;background:var(--paper);border-radius:20px;padding:18px 16px;text-align:start;box-shadow:0 6px 18px rgba(80,40,30,.12)}
+.pwbox label{display:block;font-weight:700;margin-bottom:4px}
+.pwbox input{width:100%;font:900 1.3rem "Noto Sans TC",sans-serif;text-align:center;padding:12px;border-radius:14px;border:3px solid var(--line);background:var(--paper);color:var(--ink)}
+.pwbox .showpw{display:block;margin:8px auto 14px;font:700 .95rem "Noto Sans TC",sans-serif;min-height:46px;padding:6px 18px;border-radius:999px;border:2px solid var(--ink);background:var(--paper);color:var(--ink);cursor:pointer}
+.pwbox .showpw[aria-pressed=true]{background:var(--ink);color:var(--paper)}
+.pwbox .who{margin:6px 0 10px}
+.pwbox .who .btn{min-height:54px;font-size:1rem;padding:6px}
+.pwbox .who .btn[aria-pressed=true]{background:var(--coral);border-color:var(--coral);color:#fff}
+.pwbox #pwName{font:700 1.05rem "Noto Sans TC",sans-serif;margin-bottom:14px}
 .lock .err{color:var(--coral);font-weight:700;min-height:1.6em;margin:0 0 8px}
-.lock .showpw{display:block;margin:-4px auto 10px;font:700 1rem "Noto Sans TC",sans-serif;min-height:48px;padding:6px 20px;border-radius:999px;border:2px solid var(--ink);background:var(--paper);color:var(--ink);cursor:pointer}
-.lock .showpw[aria-pressed=true]{background:var(--ink);color:var(--paper)}
 /* 安裝提示 */
 .install{max-width:520px;margin:14px auto 0;background:var(--paper);border-radius:18px;padding:14px 16px;text-align:start;box-shadow:0 4px 14px rgba(80,40,30,.12)}
 .install b{display:block;font-size:1.05rem;margin-bottom:4px}
@@ -120,11 +132,20 @@ textarea{width:100%;font:1.05rem "Noto Sans TC",sans-serif;padding:14px;border-r
   <div>
     <img src="icon-512.png" alt="吳家相簿">
     <h1>吳家相簿</h1>
-    <p>請輸入家族密碼（只要輸入一次）</p>
-    <input id="pwIn" type="password" inputmode="text" autocomplete="current-password" aria-label="家族密碼" placeholder="家族密碼">
-    <button class="showpw" id="pwShow" type="button" aria-pressed="false">顯示密碼</button>
+    <p id="lockMsg">吳家家人專用，請登入（只要登入一次）</p>
     <p class="err" id="pwErr"></p>
-    <button class="big-btn" id="pwBtn">進入相簿</button>
+    <button class="line-btn" id="lineBtn"><svg viewBox="0 0 48 48"><path fill="#fff" d="M24 6C12.4 6 3 13.6 3 23c0 8.4 7.5 15.4 17.6 16.8.7.2 1.6.5 1.9 1 .2.5.1 1.2.1 1.7l-.3 1.8c-.1.5-.4 2.1 1.8 1.1 2.3-.9 12.2-7.2 16.6-12.3C43.7 29.8 45 26.6 45 23 45 13.6 35.6 6 24 6z"/><path fill="#06c755" d="M14 27.5h-3.5a1 1 0 0 1-1-1v-7a1 1 0 0 1 2 0v6H14a1 1 0 0 1 0 2zm3.5-1a1 1 0 0 1-2 0v-7a1 1 0 0 1 2 0zm9 0a1 1 0 0 1-1.8.6L21 22.6v3.9a1 1 0 0 1-2 0v-7a1 1 0 0 1 1.8-.6l3.7 5v-4.4a1 1 0 0 1 2 0zm6.5-5h-2.5v1.5H33a1 1 0 0 1 0 2h-2.5V25H33a1 1 0 0 1 0 2h-3.5a1 1 0 0 1-1-1v-7a1 1 0 0 1 1-1H33a1 1 0 0 1 0 2z"/></svg>用 LINE 登入</button>
+    <p class="note" id="lockNote"></p>
+    <button class="linklike" id="pwToggle" type="button">沒有 LINE？改用家族密碼</button>
+    <div class="pwbox" id="pwBox" hidden>
+      <label for="pwIn">家族密碼</label>
+      <input id="pwIn" type="password" autocomplete="current-password" placeholder="家族密碼">
+      <button class="showpw" id="pwShow" type="button" aria-pressed="false">顯示密碼</button>
+      <label>請問你是？</label>
+      <div class="who" id="pwWho"></div>
+      <input id="pwName" maxlength="20" placeholder="或自己寫，例如：大姑姑" aria-label="自己寫名字">
+      <button class="big-btn" id="pwGo" type="button">進入相簿</button>
+    </div>
   </div>
 </section>
 
@@ -133,7 +154,7 @@ textarea{width:100%;font:1.05rem "Noto Sans TC",sans-serif;padding:14px;border-r
   <header class="top">
     <h1 id="hTitle">吳家相簿</h1>
     <p class="age">點一本相簿進去看</p>
-    <div class="tools"><button class="btn" data-big>字放大</button><button class="btn" data-reload>重新整理</button><button class="btn" data-who-change><span data-me>請問你是？（請自選）</span></button></div>
+    <div class="tools"><button class="btn" data-big>字放大</button><button class="btn" data-reload>重新整理</button><button class="btn" id="logoutBtn"><span data-me>登出</span></button></div>
     <div class="install" id="installBox" hidden></div>
   </header>
   <main><div class="albums" id="albums"><p class="empty">相簿載入中，請稍等…</p></div></main>
@@ -200,27 +221,60 @@ if(store.get('big')==='1')document.documentElement.classList.add('big');
 var BOOK='<svg viewBox="0 0 100 100"><rect x="18" y="14" width="64" height="72" rx="6" fill="#fff"/><rect x="28" y="26" width="44" height="34" rx="3" fill="#ffd8c6"/><circle cx="40" cy="38" r="5" fill="#fff"/><path d="M28 60l14-14 10 10 8-6 12 10z" fill="#d23a2a" opacity=".7"/></svg>';
 var SHARE='<svg class="share-ico" viewBox="0 0 24 24" fill="none" stroke="#1d6fd6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 8l5-5 5 5"/><path d="M5 12v8h14v-8"/></svg>';
 
-/* ---------- 和後台溝通（每次帶家族密碼） ---------- */
+/* ---------- 和後台溝通（每次帶 LINE 登入憑證） ---------- */
+var LIFF_ID='__LIFF_ID__';
 function api(fn){var args=[].slice.call(arguments,1);
-  return fetch(API,{method:'POST',body:JSON.stringify({pw:store.get('pw')||'',fn:fn,args:args})})
+  return fetch(API,{method:'POST',body:JSON.stringify({session:store.get('session')||'',fn:fn,args:args})})
     .then(function(r){return r.json()})
-    .then(function(j){if(j.ok)return j.data;if(j.code==='pw'){store.del('pw');showLock('密碼不對或已經換了，請重新輸入')}var e=new Error(j.error||'失敗');e.code=j.code;throw e})}
+    .then(function(j){if(j.ok)return j.data;
+      if(j.code==='auth'||j.code==='notmember'){store.del('session');showLock(j.code==='notmember'?'你不在吳家 LINE 群組裡，請先請家人把你加進吳家群組，再重新登入。':(j.error&&/密碼/.test(j.error)?j.error:'請重新登入。'))}
+      var e=new Error(j.error||'失敗');e.code=j.code;throw e})}
 
-/* ---------- 密碼畫面 ---------- */
-function showLock(msg){$('lock').hidden=false;$('home').hidden=true;$('one').hidden=true;closeV();closeSheet();$('pwErr').textContent=msg||'';setTimeout(function(){$('pwIn').focus()},50)}
-function tryPw(){var p=$('pwIn').value.trim();if(!p){$('pwErr').textContent='請輸入密碼';return}
-  $('pwBtn').disabled=true;$('pwErr').textContent='確認中…';store.set('pw',p);
-  api('check').then(function(){$('pwBtn').disabled=false;$('pwIn').value='';$('lock').hidden=true;$('home').hidden=false;load();route()},
-    function(e){$('pwBtn').disabled=false;if(e.code!=='pw'){store.del('pw');$('pwErr').textContent='網路不穩，請再試一次'}})}
-$('pwShow').onclick=function(){var on=$('pwIn').type==='password';$('pwIn').type=on?'text':'password';this.textContent=on?'隱藏密碼':'顯示密碼';this.setAttribute('aria-pressed',on?'true':'false');$('pwIn').focus()};
-$('pwBtn').onclick=tryPw;$('pwIn').addEventListener('keydown',function(e){if(e.key==='Enter')tryPw()});
+/* ---------- LINE 登入畫面 ---------- */
+function showLock(msg){$('lock').hidden=false;$('home').hidden=true;$('one').hidden=true;closeV();closeSheet();$('pwErr').textContent=msg||'';$('lineBtn').disabled=false}
+var liffReady=null;
+function initLiff(){if(liffReady)return liffReady;
+  liffReady=(window.liff&&LIFF_ID.indexOf('__')<0)?liff.init({liffId:LIFF_ID}).then(function(){return liff}):Promise.reject(new Error('nolift'));
+  return liffReady}
+function finishLogin(){var tok=liff.getIDToken();if(!tok){liff.logout();return startLogin()}
+  $('pwErr').textContent='確認身分中，請稍等…';$('lineBtn').disabled=true;
+  return fetch(API,{method:'POST',body:JSON.stringify({fn:'login',args:[tok]})}).then(function(r){return r.json()}).then(function(j){
+    if(!j.ok){$('lineBtn').disabled=false;
+      if(j.code==='notmember'){$('pwErr').textContent='你不在吳家 LINE 群組裡。請先請家人把你加進吳家群組，再按一次登入。';try{liff.logout()}catch(e){}}
+      else if(j.code==='setup')$('pwErr').textContent='相簿還在設定中，請稍後再試。';
+      else{$('pwErr').textContent='登入沒有成功，請再按一次。';try{liff.logout()}catch(e){}}
+      return}
+    store.set('session',j.data.session);store.set('name',j.data.name);showMe();
+    $('pwErr').textContent='';$('lock').hidden=true;$('home').hidden=false;load();route()
+  },function(){$('lineBtn').disabled=false;$('pwErr').textContent='網路不穩，請再按一次登入。'})}
+function startLogin(){$('lineBtn').disabled=true;$('pwErr').textContent='正在連到 LINE…';
+  initLiff().then(function(){if(liff.isLoggedIn())return finishLogin();liff.login({redirectUri:location.origin+location.pathname})},
+    function(){$('lineBtn').disabled=false;$('pwErr').textContent='相簿還在設定中，請稍後再試。'})}
+$('lineBtn').onclick=startLogin;
+/* ---------- 家族密碼登入（給不用 LINE 的家人） ---------- */
+var WHO=['阿公','阿嬤','爸爸','姑姑','叔叔','Lucy','姿穎','Sunny','Sky'],pickName='';
+$('pwWho').innerHTML=WHO.map(function(w){return'<button class="btn" type="button" aria-pressed="false" data-who="'+w+'">'+w+'</button>'}).join('');
+$('pwWho').addEventListener('click',function(e){var b=e.target.closest('[data-who]');if(!b)return;pickName=b.dataset.who;$('pwName').value='';$$('#pwWho [data-who]').forEach(function(x){x.setAttribute('aria-pressed',x===b?'true':'false')})});
+$('pwName').addEventListener('input',function(){if(this.value.trim()){pickName='';$$('#pwWho [data-who]').forEach(function(x){x.setAttribute('aria-pressed','false')})}});
+$('pwToggle').onclick=function(){var open=$('pwBox').hidden;$('pwBox').hidden=!open;this.textContent=open?'收起家族密碼':'沒有 LINE？改用家族密碼';if(open)$('pwIn').focus()};
+$('pwShow').onclick=function(){var on=$('pwIn').type==='password';$('pwIn').type=on?'text':'password';this.textContent=on?'隱藏密碼':'顯示密碼';this.setAttribute('aria-pressed',on?'true':'false')};
+$('pwGo').onclick=function(){var pw=$('pwIn').value.trim(),name=$('pwName').value.trim()||pickName;
+  if(!pw){$('pwErr').textContent='請輸入家族密碼';return}
+  if(!name){$('pwErr').textContent='請點一下你是誰，或自己寫名字';return}
+  $('pwGo').disabled=true;$('pwErr').textContent='確認中…';
+  fetch(API,{method:'POST',body:JSON.stringify({fn:'pwlogin',args:[pw,name]})}).then(function(r){return r.json()}).then(function(j){$('pwGo').disabled=false;
+    if(!j.ok){$('pwErr').textContent=j.code==='pw'?'密碼不對，可以按「顯示密碼」檢查一下':'沒有成功，請再試一次';return}
+    store.set('session',j.data.session);store.set('name',j.data.name);showMe();$('pwIn').value='';
+    $('pwErr').textContent='';$('lock').hidden=true;$('home').hidden=false;load();route()},
+  function(){$('pwGo').disabled=false;$('pwErr').textContent='網路不穩，請再試一次'})};
+$('logoutBtn').onclick=function(){ask('要登出嗎？之後要再登入一次。','登出',function(){store.del('session');store.del('name');initLiff().then(function(){if(liff.isLoggedIn())liff.logout()},function(){});showLock('')})};
 
 function months(b,d){var B=new Date(b),X=new Date(d);if(!b||isNaN(B)||isNaN(X))return null;if(X<B)return -1;var m=(X.getFullYear()-B.getFullYear())*12+X.getMonth()-B.getMonth();if(X.getDate()<B.getDate())m--;return m}
 function label(m){if(m===null)return'';if(m<0)return'出生之前';if(m===0)return'剛出生・第一個月';if(m<12)return m+' 個月大';var y=Math.floor(m/12),r=m%12;return y+' 歲'+(r?r+' 個月':'')}
 function pretty(d){var p=String(d).split('-');return p.length===3?(+p[0])+' 年 '+(+p[1])+' 月 '+(+p[2])+' 日':d}
 function thumb(id,w){return'https://drive.google.com/thumbnail?id='+encodeURIComponent(id)+'&sz=w'+w}
-function me(){return store.get('who')||''}
-function showMe(){$$('[data-me]').forEach(function(e){e.textContent=me()?'換人（'+me()+'）':'請問你是？（請自選）'})}
+function me(){return store.get('name')||''}
+function showMe(){$$('[data-me]').forEach(function(e){e.textContent=me()?'登出（'+me()+'）':'登出'})}
 
 /* ---------- 安裝到手機桌面 ---------- */
 var deferred=null;
@@ -257,7 +311,7 @@ function renderHome(){
 $('albums').addEventListener('click',function(e){var b=e.target.closest('[data-a]');if(b){location.hash='album-'+b.dataset.a;return}if(e.target.closest('#newAl'))albumForm(null)});
 
 /* ---------- 換頁（用網址 # 記住在哪本相簿） ---------- */
-function route(){if(!store.get('pw'))return;var m=/^#album-(.+)$/.exec(location.hash);
+function route(){if(!store.get('session'))return;var m=/^#album-(.+)$/.exec(location.hash);
   if(m){A=D.albums.filter(function(a){return a.id===m[1]})[0]||null;
     if(!A){if(loaded){location.hash='';return}}
     $('home').hidden=true;$('one').hidden=false;if(A)renderAlbum();else{$('aTitle').textContent='載入中…';$('album').innerHTML=''}}
@@ -294,9 +348,9 @@ function renderAlbum(){if(!A)return;
 }
 
 var busy=false;
-function load(){if(busy||!store.get('pw'))return;busy=true;
+function load(){if(busy||!store.get('session'))return;busy=true;
   api('getData').then(function(d){busy=false;D=d;loaded=true;route();if(cur>=0)show(Math.min(cur,list.length-1))},
-    function(e){busy=false;if(e.code!=='pw')done('網路不穩，請按「重新整理」')})}
+    function(e){busy=false;if(e.code!=='auth'&&e.code!=='notmember')done('網路不穩，請按「重新整理」')})}
 
 /* ---------- 看照片 ---------- */
 function show(i){var p=list[i];if(!p){closeV();return}cur=i;
@@ -323,21 +377,15 @@ function ask(text,yes,cb){sheet('<p class="msg">'+esc(text)+'</p><div class="row
 function done(text){sheet('<p class="msg">'+esc(text)+'</p><button class="big-btn" id="sOk" style="min-height:64px">好</button>');$('sOk').onclick=closeSheet}
 $('sheet').addEventListener('click',function(e){if(e.target===$('sheet')&&!$('pBar'))closeSheet()});
 
-/* ---------- 請問你是誰 ---------- */
-var WHO=['阿公','阿嬤','爸爸','姑姑','叔叔','Lucy','姿穎','Sunny','Sky'];
-function whoAmI(cb,force){if(me()&&!force){cb(me());return}
-  sheet('<h2>請問你是？</h2><div class="who">'+WHO.map(function(w){return'<button class="btn" data-who="'+w+'">'+w+'</button>'}).join('')+'</div><label for="sWho" style="margin-top:14px">或自己寫：</label><input id="sWho" maxlength="20" placeholder="例如：大姑姑"><button class="btn main" id="sWhoOk" style="width:100%">確定</button>');
-  var pick=function(v){v=String(v||'').trim();if(!v)return;store.set('who',v);showMe();closeSheet();cb(v)};
-  $('card').querySelectorAll('[data-who]').forEach(function(b){b.onclick=function(){pick(b.dataset.who)}});
-  $('sWhoOk').onclick=function(){pick($('sWho').value)}}
-$$('[data-who-change]').forEach(function(b){b.onclick=function(){whoAmI(function(){},true)}});
+/* ---------- 上傳者：用 LINE 名字 ---------- */
+function whoAmI(cb){cb(me())}
 
 /* ---------- 新增 / 修改相簿 ---------- */
 function albumForm(a){
   sheet('<h2>'+(a?'修改相簿':'新增一本相簿')+'</h2><label for="sName">相簿名字</label><input id="sName" maxlength="20" placeholder="例如：小寶、家族旅行" value="'+esc(a?a.name:'')+'"><label for="sBirth">寶寶生日</label><p class="hint">寶寶相簿才需要填，會自動算出幾個月大；其他相簿空著就好</p><input type="date" id="sBirth" value="'+esc(a?a.birth:'')+'"><div class="row2"><button class="btn" id="sNo">取消</button><button class="btn main" id="sYes">儲存</button></div>');
   $('sNo').onclick=closeSheet;
   $('sYes').onclick=function(){var n=$('sName').value.trim(),b=$('sBirth').value;if(!n){$('sName').focus();return}$('sYes').disabled=true;
-    (a?api('saveAlbum',a.id,n,b):api('createAlbum',n,b)).then(function(id){closeSheet();if(!a&&id)location.hash='album-'+id;load()},function(e){if(e.code!=='pw')done('沒有存成功，請再試一次')})}}
+    (a?api('saveAlbum',a.id,n,b):api('createAlbum',n,b)).then(function(id){closeSheet();if(!a&&id)location.hash='album-'+id;load()},function(e){if(e.code!=='auth')done('沒有存成功，請再試一次')})}}
 $('infoBtn').onclick=function(){if(A)albumForm(A)};
 
 /* ---------- 讀拍攝日期：照片讀 EXIF，影片讀 MP4/MOV 檔頭；讀不到才用檔案日期 ---------- */
@@ -397,12 +445,12 @@ $('vedit').onclick=function(){var p=list[cur];if(!p)return;
   var opts=D.albums.map(function(a){return'<option value="'+esc(a.id)+'"'+(a.id===p.album?' selected':'')+'>'+esc(a.name)+'</option>'}).join('');
   sheet('<h2>修改這個'+(p.kind==='video'?'影片':'照片')+'</h2><label for="sCap">說明</label><textarea id="sCap" maxlength="140" placeholder="例如：第一次翻身">'+esc(p.caption)+'</textarea><label for="sDate" style="margin-top:10px">拍攝日期</label><input type="date" id="sDate" value="'+esc(p.taken)+'"><label for="sAl">放在哪本相簿</label><select id="sAl">'+opts+'</select><div class="row2"><button class="btn" id="sNo">取消</button><button class="btn main" id="sYes">儲存</button></div>');
   $('sNo').onclick=closeSheet;$('sYes').onclick=function(){var c=$('sCap').value,d=$('sDate').value,al=$('sAl').value;$('sYes').disabled=true;
-    api('updatePhoto',p.id,c,d,al).then(function(){p.caption=c.trim();p.taken=d||p.taken;closeSheet();if(al!==p.album){p.album=al;closeV();renderAlbum();load()}else{renderAlbum();show(list.indexOf(p))}},function(e){if(e.code!=='pw')done('沒有存成功，請再試一次')})}};
-$('vdel').onclick=function(){var p=list[cur];if(!p)return;ask('確定要刪除這個'+(p.kind==='video'?'影片':'照片')+'嗎？','刪除',function(){closeV();api('deletePhoto',p.id,me()).then(load,function(e){if(e.code!=='pw')done('刪除失敗')})})};
+    api('updatePhoto',p.id,c,d,al).then(function(){p.caption=c.trim();p.taken=d||p.taken;closeSheet();if(al!==p.album){p.album=al;closeV();renderAlbum();load()}else{renderAlbum();show(list.indexOf(p))}},function(e){if(e.code!=='auth')done('沒有存成功，請再試一次')})}};
+$('vdel').onclick=function(){var p=list[cur];if(!p)return;ask('確定要刪除這個'+(p.kind==='video'?'影片':'照片')+'嗎？','刪除',function(){closeV();api('deletePhoto',p.id,me()).then(load,function(e){if(e.code!=='auth')done('刪除失敗')})})};
 
 /* ---------- 留言 ---------- */
 $('wsend').onclick=function(){var t=$('wtext').value.trim();if(!t){done('請先在框框裡寫字');return}if(!A)return;
-  whoAmI(function(who){$('wsend').disabled=true;api('addWish',t,who,A.id).then(function(){$('wtext').value='';$('wsend').disabled=false;load();done('留言送出了！')},function(e){$('wsend').disabled=false;if(e.code!=='pw')done('沒有送出，請再試一次')})})};
+  whoAmI(function(who){$('wsend').disabled=true;api('addWish',t,who,A.id).then(function(){$('wtext').value='';$('wsend').disabled=false;load();done('留言送出了！')},function(e){$('wsend').disabled=false;if(e.code!=='auth')done('沒有送出，請再試一次')})})};
 $('wlist').addEventListener('click',function(e){var b=e.target.closest('[data-w]');if(!b)return;ask('刪除這則留言？','刪除',function(){api('deleteWish',b.dataset.w).then(load,function(){})})});
 
 /* ---------- 其他 ---------- */
@@ -411,7 +459,9 @@ $$('[data-big]').forEach(function(b){b.onclick=function(){setBig(!document.docum
 setBig(document.documentElement.classList.contains('big'));
 $$('[data-reload]').forEach(function(b){b.onclick=load});
 if('serviceWorker' in navigator)window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){})});
-if(store.get('pw')){route();load()}else showLock('');
+store.del('pw');store.del('who');showMe();
+if(store.get('session')){route();load()}
+else{showLock('');initLiff().then(function(){if(liff.isLoggedIn())finishLogin()},function(){})}
 document.addEventListener('visibilitychange',function(){if(!document.hidden)load()});
 setInterval(function(){if(!document.hidden&&cur<0&&!$('sheet').classList.contains('on'))load()},120000);
 })();

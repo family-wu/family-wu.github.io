@@ -1,5 +1,5 @@
 // 吳家相簿：讓手機可以安裝，畫面檔案先存在手機裡打開比較快
-const CACHE = 'wu-album-v2';
+const CACHE = 'wu-album-v3';
 const SHELL = ['./', './index.html', './manifest.webmanifest', './icon-180.png', './icon-192.png', './icon-512.png', './icon-maskable-512.png'];
 
 self.addEventListener('install', e => {
