@@ -222,7 +222,7 @@ var BOOK='<svg viewBox="0 0 100 100"><rect x="18" y="14" width="64" height="72" 
 var SHARE='<svg class="share-ico" viewBox="0 0 24 24" fill="none" stroke="#1d6fd6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 8l5-5 5 5"/><path d="M5 12v8h14v-8"/></svg>';
 
 /* ---------- 和後台溝通（每次帶 LINE 登入憑證） ---------- */
-var LIFF_ID='__LIFF_ID__';
+var LIFF_ID='2012799851-mzkQQKAl';
 function api(fn){var args=[].slice.call(arguments,1);
   return fetch(API,{method:'POST',body:JSON.stringify({session:store.get('session')||'',fn:fn,args:args})})
     .then(function(r){return r.json()})
