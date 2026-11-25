@@ -42,6 +42,8 @@ main{padding:10px 14px 30px;max-width:1000px;margin:0 auto}
 .lock p{margin:0 0 18px;color:var(--soft)}
 .lock input{width:100%;max-width:360px;font:900 1.4rem "Noto Sans TC",sans-serif;text-align:center;padding:14px;border-radius:16px;border:3px solid var(--line);margin-bottom:14px;background:var(--paper);color:var(--ink)}
 .lock .err{color:var(--coral);font-weight:700;min-height:1.6em;margin:0 0 8px}
+.lock .showpw{display:block;margin:-4px auto 10px;font:700 1rem "Noto Sans TC",sans-serif;min-height:48px;padding:6px 20px;border-radius:999px;border:2px solid var(--ink);background:var(--paper);color:var(--ink);cursor:pointer}
+.lock .showpw[aria-pressed=true]{background:var(--ink);color:var(--paper)}
 /* 安裝提示 */
 .install{max-width:520px;margin:14px auto 0;background:var(--paper);border-radius:18px;padding:14px 16px;text-align:start;box-shadow:0 4px 14px rgba(80,40,30,.12)}
 .install b{display:block;font-size:1.05rem;margin-bottom:4px}
@@ -120,6 +122,7 @@ textarea{width:100%;font:1.05rem "Noto Sans TC",sans-serif;padding:14px;border-r
     <h1>吳家相簿</h1>
     <p>請輸入家族密碼（只要輸入一次）</p>
     <input id="pwIn" type="password" inputmode="text" autocomplete="current-password" aria-label="家族密碼" placeholder="家族密碼">
+    <button class="showpw" id="pwShow" type="button" aria-pressed="false">顯示密碼</button>
     <p class="err" id="pwErr"></p>
     <button class="big-btn" id="pwBtn">進入相簿</button>
   </div>
@@ -209,6 +212,7 @@ function tryPw(){var p=$('pwIn').value.trim();if(!p){$('pwErr').textContent='請
   $('pwBtn').disabled=true;$('pwErr').textContent='確認中…';store.set('pw',p);
   api('check').then(function(){$('pwBtn').disabled=false;$('pwIn').value='';$('lock').hidden=true;$('home').hidden=false;load();route()},
     function(e){$('pwBtn').disabled=false;if(e.code!=='pw'){store.del('pw');$('pwErr').textContent='網路不穩，請再試一次'}})}
+$('pwShow').onclick=function(){var on=$('pwIn').type==='password';$('pwIn').type=on?'text':'password';this.textContent=on?'隱藏密碼':'顯示密碼';this.setAttribute('aria-pressed',on?'true':'false');$('pwIn').focus()};
 $('pwBtn').onclick=tryPw;$('pwIn').addEventListener('keydown',function(e){if(e.key==='Enter')tryPw()});
 
 function months(b,d){var B=new Date(b),X=new Date(d);if(!b||isNaN(B)||isNaN(X))return null;if(X<B)return -1;var m=(X.getFullYear()-B.getFullYear())*12+X.getMonth()-B.getMonth();if(X.getDate()<B.getDate())m--;return m}
