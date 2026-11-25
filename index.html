@@ -135,6 +135,46 @@ textarea{width:100%;font:1.05rem "Noto Sans TC",sans-serif;padding:14px;border-r
 .seg{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:6px 0 12px}
 .seg .btn[aria-pressed=true]{background:var(--coral);border-color:var(--coral);color:#fff}
 .dm{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.seg4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:0 0 14px}
+.seg4 button{font:900 1.1rem "Noto Sans TC",sans-serif;min-height:56px;border-radius:14px;border:2px solid var(--ink);background:var(--paper);color:var(--ink);cursor:pointer}
+.seg4 button[aria-pressed=true]{background:var(--ink);color:#fff}
+.cnav{display:flex;align-items:center;justify-content:space-between;gap:6px;margin:16px 0 10px}
+.cnav b{font-size:1.25rem;text-align:center;flex:1}
+.cnav .btn{min-height:52px;padding:6px 14px;font-size:1rem}
+.cnav .btn.today{font-size:.9rem;padding:6px 10px}
+.mgrid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:3px}
+.mgrid .wd{text-align:center;font-weight:900;color:var(--soft);font-size:.8rem;padding:4px 0}
+.mgrid .wd.sun,.mc.sun .n{color:var(--coral)}
+.mc{min-height:74px;background:var(--paper);border-radius:10px;padding:3px;border:2px solid transparent;cursor:pointer;display:flex;flex-direction:column;align-items:stretch;gap:2px;overflow:hidden;text-align:left;font:inherit;color:inherit;min-width:0}
+.mc.blank{visibility:hidden}
+.mc .n{font-weight:900;font-size:.85rem;align-self:flex-start;padding:0 5px;border-radius:999px}
+.mc.today .n{background:var(--coral);color:#fff!important}
+.mc.sel{border-color:var(--ink)}
+.chip{display:block;font-size:.62rem;line-height:1.3;border-radius:4px;padding:1px 3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mc .ics{font-size:.95rem;line-height:1.1;letter-spacing:-1px;word-break:break-all}
+.mc .ics em{font-style:normal;font-size:.65rem;color:var(--soft);font-weight:900;letter-spacing:0}
+.mc.has{background:#fff4ef}
+.selh{font-size:1.3rem;margin:20px 0 4px;scroll-margin-top:12px}
+.selh small{font-size:.85rem;color:var(--soft);margin-left:8px}
+.mc .more{font-size:.62rem;color:var(--soft);font-weight:700}
+.k-event{background:#fde2dd;color:#8a2416}
+.k-birthday{background:#ffe6c2;color:#7a4a00}
+.k-anniv{background:#f6dcef;color:#7a2462}
+.k-milestone{background:#d6efe2;color:#16613f}
+.legend{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 0;font-size:.8rem}
+.legend .chip{font-size:.8rem;padding:2px 8px}
+.ygrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.ym{background:var(--paper);border-radius:14px;padding:8px 6px;cursor:pointer;border:2px solid transparent;font:inherit;color:inherit;text-align:center;box-shadow:0 3px 10px rgba(80,40,30,.08)}
+.ym.cur{border-color:var(--coral)}
+.ym h3{font-size:1rem;margin:0 0 4px;color:var(--coral)}
+.ym .g{display:grid;grid-template-columns:repeat(7,1fr);gap:1px;font-size:.62rem}
+.ym .g i{font-style:normal;padding:2px 0;border-radius:4px}
+.ym .g i.has{background:#fde2dd;font-weight:900;color:#8a2416}
+.ym .g i.today{background:var(--coral);color:#fff}
+.ym small{display:block;color:var(--soft);font-size:.75rem;margin-top:4px}
+.dhead{font-size:1.35rem;font-weight:900;text-align:center;flex:1}
+.ci .acts{display:flex;flex-direction:column;gap:6px}
+.ci .k{font-size:1.4rem}
 .bar{height:16px;background:var(--line);border-radius:9px;overflow:hidden;margin:10px 0}
 .bar i{display:block;height:100%;width:0;background:var(--coral);transition:width .3s}
 </style>
@@ -209,6 +249,7 @@ textarea{width:100%;font:1.05rem "Noto Sans TC",sans-serif;padding:14px;border-r
     <p class="age">生日、紀念日、聚會、回診<br>小幫手會在前一天到 LINE 群組提醒大家</p>
   </header>
   <main class="cal">
+    <div class="seg4" id="calTabs"><button data-v="day" aria-pressed="false">日</button><button data-v="month" aria-pressed="true">月</button><button data-v="year" aria-pressed="false">年</button><button data-v="list" aria-pressed="false">清單</button></div>
     <div class="row2"><button class="big-btn" id="evAdd" style="font-size:1rem;min-height:70px;padding:10px">＋ 新增活動</button><button class="big-btn" id="dayAdd" style="font-size:1rem;min-height:70px;padding:10px">＋ 生日紀念日</button></div>
     <div id="calBody"><p class="empty">載入中，請稍等…</p></div>
     <div class="tip"><b>也可以在 LINE 群組直接打字：</b><br>提醒 12/31 18:00 跨年聚餐<br>提醒 明天 10:00 阿嬤回診<br>生日 阿嬤 農曆 3/15<br>紀念日 爸媽結婚 1990/6/20<br>行事曆　（看全部）</div>
@@ -483,32 +524,87 @@ $('wsend').onclick=function(){var t=$('wtext').value.trim();if(!t){done('請先�
   whoAmI(function(who){$('wsend').disabled=true;api('addWish',t,who,A.id).then(function(){$('wtext').value='';$('wsend').disabled=false;load();done('留言送出了！')},function(e){$('wsend').disabled=false;if(e.code!=='auth')done('沒有送出，請再試一次')})})};
 $('wlist').addEventListener('click',function(e){var b=e.target.closest('[data-w]');if(!b)return;ask('刪除這則留言？','刪除',function(){api('deleteWish',b.dataset.w).then(load,function(){})})});
 
-/* ---------- 家族行事曆 ---------- */
-var C=null,calBusy=false;
+/* ---------- 家族行事曆：日 / 月 / 年 / 清單 ---------- */
+var C=null,calBusy=false,YC={},calView=store.get('calView')||'month',calSel=null;
 $('calBtn').onclick=function(){location.hash='cal'};
 $('calBack').onclick=function(){location.hash=''};
-var WD='日一二三四五六';
-function mdw(s){var p=String(s).split('-');var d=new Date(+p[0],+p[1]-1,+p[2]);return(+p[1])+'/'+(+p[2])+'（'+WD.charAt(d.getDay())+'）'}
-function inDays(s){var p=String(s).split('-'),t=String(C.today).split('-');var n=Math.round((new Date(+p[0],+p[1]-1,+p[2])-new Date(+t[0],+t[1]-1,+t[2]))/864e5);return n===0?'今天':n===1?'明天':n===2?'後天':n>0?n+' 天後':''}
-function loadCal(){if(!C)$('calBody').innerHTML='<p class="empty">載入中，請稍等…</p>';else renderCal();if(calBusy)return;calBusy=true;
-  api('getCal').then(function(c){calBusy=false;C=c;renderCal()},function(e){calBusy=false;if(e.code!=='auth'&&e.code!=='notmember')$('calBody').innerHTML='<p class="empty">網路不穩，請按「回到所有相簿」再進來一次</p>'})}
-function renderCal(){if(!C)return;var h='';
-  h+='<h2>📅 活動</h2>';
+var WD='日一二三四五六',ICON={event:'📅',birthday:'🎂',anniv:'💝',milestone:'👶'};
+function pd(s){var p=String(s).split('-');return new Date(+p[0],+p[1]-1,+p[2])}
+function ymd(d){return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2)}
+function addD(s,n){var d=pd(s);d.setDate(d.getDate()+n);return ymd(d)}
+function todayS(){return ymd(new Date())}
+function mdw(s){var d=pd(s);return(d.getMonth()+1)+'/'+d.getDate()+'（'+WD.charAt(d.getDay())+'）'}
+function inDays(s){var n=Math.round((pd(s)-pd(todayS()))/864e5);return n===0?'今天':n===1?'明天':n===2?'後天':n>0?n+' 天後':n===-1?'昨天':(-n)+' 天前'}
+function chipText(it){return ICON[it.kind]+(it.kind==='event'?(it.time?it.time.replace(/^0/,'')+' ':'')+it.text:(it.short||it.text))}
+function calTabs(){$$('#calTabs button').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.v===calView)})}
+$('calTabs').onclick=function(e){var b=e.target.closest('[data-v]');if(!b)return;calView=b.dataset.v;store.set('calView',calView);calTabs();renderCal()};
+function yearData(y,cb){if(YC[y]){cb(YC[y]);return}
+  api('getCalYear',y).then(function(d){var by={};d.items.forEach(function(it){(by[it.date]=by[it.date]||[]).push(it)});YC[y]={items:d.items,by:by};cb(YC[y])},
+    function(e){if(e.code!=='auth'&&e.code!=='notmember')$('calBody').innerHTML='<p class="empty">網路不穩，請按「回到所有相簿」再進來一次</p>'})}
+function loadCal(){if(!calSel)calSel=todayS();calTabs();renderCal()}
+function refreshCal(){YC={};C=null;renderCal()}
+function renderCal(){var y=pd(calSel).getFullYear();
+  if(calView==='list'){renderList();return}
+  if(!YC[y])$('calBody').innerHTML='<p class="empty">載入中，請稍等…</p>';
+  yearData(y,function(Y){if(pd(calSel).getFullYear()!==y||calView==='list')return;
+    if(calView==='day')renderDay(Y);else if(calView==='year')renderYear(Y);else renderMonth(Y)})}
+function legend(){return'<div class="legend"><span class="chip k-event">📅 活動</span><span class="chip k-birthday">🎂 生日</span><span class="chip k-anniv">💝 紀念日</span><span class="chip k-milestone">👶 寶寶</span></div>'}
+function renderMonth(Y){var d=pd(calSel),y=d.getFullYear(),m=d.getMonth(),first=new Date(y,m,1),days=new Date(y,m+1,0).getDate(),t=todayS();
+  var h='<div class="cnav"><button class="btn" data-go="-1">◀</button><b>'+y+' 年 '+(m+1)+' 月</b><button class="btn" data-go="1">▶</button><button class="btn today" data-go="0">今天</button></div><div class="mgrid">';
+  for(var i=0;i<7;i++)h+='<div class="wd'+(i===0?' sun':'')+'">'+WD.charAt(i)+'</div>';
+  for(i=0;i<first.getDay();i++)h+='<div class="mc blank"></div>';
+  for(var n=1;n<=days;n++){var s=ymd(new Date(y,m,n)),its=Y.by[s]||[],dw=new Date(y,m,n).getDay();
+    h+='<button class="mc'+(its.length?' has':'')+(dw===0?' sun':'')+(s===t?' today':'')+(s===calSel?' sel':'')+'" data-d="'+s+'"><span class="n">'+n+'</span>';
+    if(its.length)h+='<span class="ics">'+its.slice(0,3).map(function(it){return ICON[it.kind]}).join('')+(its.length>3?'<em>+'+(its.length-3)+'</em>':'')+'</span>';
+    h+='</button>'}
+  var sd=pd(calSel),sits=Y.by[calSel]||[];
+  h+='</div>'+legend()+'<h2 class="selh">'+(sd.getMonth()+1)+' 月 '+sd.getDate()+' 日（'+WD.charAt(sd.getDay())+'）<small>'+inDays(calSel)+'</small></h2>'+dayList(sits);
+  $('calBody').innerHTML=h}
+function dayList(its){var h='';
+  if(!its.length)h+='<p class="empty" style="margin:12px 0">這天還沒有事情</p>';
+  its.forEach(function(it){h+='<div class="ci"><div class="k">'+ICON[it.kind]+'</div><div class="tx"><b>'+esc(it.text)+'</b>'+(it.time?'<small>'+esc(it.time)+'</small>':'')+(it.by?'<small>'+esc(it.by)+' 加的</small>':'')+'</div>'+
+    (it.kind==='event'?'<div class="acts"><button class="btn x" data-ee="'+esc(it.id)+'">修改</button><button class="btn x" data-de="'+esc(it.id)+'">刪除</button></div>':(it.kind==='birthday'||it.kind==='anniv')&&!it.baby?'<button class="btn x" data-dd="'+esc(it.id)+'">刪除</button>':'')+'</div>'});
+  return h+'<button class="big-btn" data-addday="1" style="margin-top:14px;font-size:1.05rem;min-height:64px">＋ 在這天新增活動</button>'}
+function renderDay(Y){var its=Y.by[calSel]||[],d=pd(calSel);
+  var h='<div class="cnav"><button class="btn" data-go="-1">◀</button><div class="dhead">'+(d.getMonth()+1)+' 月 '+d.getDate()+' 日（'+WD.charAt(d.getDay())+'）<br><small style="font-size:.85rem;color:var(--soft)">'+d.getFullYear()+' 年・'+inDays(calSel)+'</small></div><button class="btn" data-go="1">▶</button></div>';
+  h+=dayList(its)+'<button class="btn" data-go="0" style="width:100%;margin-top:12px">回到今天</button>';
+  $('calBody').innerHTML=h}
+function renderYear(Y){var y=pd(calSel).getFullYear(),t=todayS();
+  var h='<div class="cnav"><button class="btn" data-go="-1">◀</button><b>'+y+' 年</b><button class="btn" data-go="1">▶</button><button class="btn today" data-go="0">今年</button></div><div class="ygrid">';
+  for(var m=0;m<12;m++){var first=new Date(y,m,1),days=new Date(y,m+1,0).getDate(),cnt=0,g='';
+    for(var i=0;i<7;i++)g+='<i style="color:var(--soft)">'+WD.charAt(i)+'</i>';
+    for(i=0;i<first.getDay();i++)g+='<i></i>';
+    for(var n=1;n<=days;n++){var s=ymd(new Date(y,m,n)),c=(Y.by[s]||[]).length;cnt+=c;g+='<i class="'+(s===t?'today':c?'has':'')+'">'+n+'</i>'}
+    h+='<button class="ym'+(t.slice(0,7)===ymd(first).slice(0,7)?' cur':'')+'" data-m="'+ymd(first)+'"><h3>'+(m+1)+' 月</h3><div class="g">'+g+'</div><small>'+(cnt?cnt+' 件事':'　')+'</small></button>'}
+  $('calBody').innerHTML=h+'</div><p class="hint" style="text-align:center;color:var(--soft);margin-top:10px">點一個月份可以看那個月</p>'}
+function renderList(){if(!C)$('calBody').innerHTML='<p class="empty">載入中，請稍等…</p>';else listHtml();if(calBusy)return;calBusy=true;
+  api('getCal').then(function(c){calBusy=false;C=c;if(calView==='list')listHtml()},function(e){calBusy=false;if(e.code!=='auth'&&e.code!=='notmember')$('calBody').innerHTML='<p class="empty">網路不穩，請再試一次</p>'})}
+function listHtml(){var h='<h2>📅 活動</h2>';
   if(!C.events.length)h+='<p class="empty" style="margin:8px 0">還沒有活動，按上面「＋ 新增活動」</p>';
-  C.events.forEach(function(e){h+='<div class="ci'+(e.past?' past':'')+'"><div class="dt">'+esc(mdw(e.date))+'<small>'+(e.past?'過了':esc(inDays(e.date)))+'</small></div><div class="tx"><b>'+esc(e.text)+'</b>'+(e.time?'<small>'+esc(e.time)+'</small>':'')+(e.by?'<small>'+esc(e.by)+' 加的</small>':'')+'</div><button class="btn x" data-de="'+esc(e.id)+'">刪除</button></div>'});
+  C.events.forEach(function(e){h+='<div class="ci'+(e.past?' past':'')+'"><div class="dt">'+esc(mdw(e.date))+'<small>'+esc(inDays(e.date))+'</small></div><div class="tx"><b>'+esc(e.text)+'</b>'+(e.time?'<small>'+esc(e.time)+'</small>':'')+(e.by?'<small>'+esc(e.by)+' 加的</small>':'')+'</div><div class="acts"><button class="btn x" data-ee="'+esc(e.id)+'">修改</button><button class="btn x" data-de="'+esc(e.id)+'">刪除</button></div></div>'});
   h+='<h2>🎂 生日和紀念日</h2>';
   if(!C.days.length)h+='<p class="empty" style="margin:8px 0">還沒有，按上面「＋ 生日紀念日」</p>';
   C.days.forEach(function(x){h+='<div class="ci"><div class="dt">'+(x.next?esc(mdw(x.next))+'<small>'+esc(inDays(x.next))+'</small>':'')+'</div><div class="tx"><b>'+esc(x.label)+'</b><small>'+(x.cal==='農曆'?'農曆 ':'')+x.m+'/'+x.d+(x.baby?'・寶寶相簿的生日':'')+'</small></div>'+(x.baby?'':'<button class="btn x" data-dd="'+esc(x.id)+'">刪除</button>')+'</div>'});
   if(C.milestones.length){h+='<h2>👶 寶寶的日子</h2>';C.milestones.forEach(function(x){h+='<div class="ci"><div class="dt">'+esc(mdw(x.date))+'<small>'+esc(inDays(x.date))+'</small></div><div class="tx"><b>'+esc(x.text)+'</b></div></div>'})}
   $('calBody').innerHTML=h}
-$('calBody').addEventListener('click',function(e){var b=e.target.closest('[data-de]'),c=e.target.closest('[data-dd]');
-  if(b)ask('要刪除這個活動嗎？','刪除',function(){api('deleteEvent',b.dataset.de).then(loadCal,function(){done('沒有刪除成功，請再試一次')})});
-  if(c)ask('要刪除這個生日或紀念日嗎？','刪除',function(){api('deleteDay',c.dataset.dd).then(loadCal,function(){done('沒有刪除成功，請再試一次')})})});
-$('evAdd').onclick=function(){
-  sheet('<h2>新增活動</h2><label for="eDate">哪一天</label><input type="date" id="eDate" value="'+day()+'"><label for="eTime">幾點（可以不填）</label><input type="time" id="eTime"><label for="eText">要提醒什麼</label><input id="eText" maxlength="100" placeholder="例如：跨年聚餐、阿嬤回診 台大"><p class="hint">小幫手會在前一天到 LINE 群組提醒大家</p><div class="row2"><button class="btn" id="sNo">取消</button><button class="btn main" id="sYes">儲存</button></div>');
+function findEvent(id){var f=null;Object.keys(YC).forEach(function(y){YC[y].items.forEach(function(it){if(it.kind==='event'&&it.id===id)f=it})});
+  if(!f&&C)C.events.forEach(function(e){if(e.id===id)f=e});return f}
+$('calBody').addEventListener('click',function(e){var t;
+  if((t=e.target.closest('[data-go]'))){var g=+t.dataset.go,d=pd(calSel);
+    if(g===0)calSel=todayS();else if(calView==='day')calSel=addD(calSel,g);else if(calView==='year')calSel=ymd(new Date(d.getFullYear()+g,0,1));else calSel=ymd(new Date(d.getFullYear(),d.getMonth()+g,1));
+    renderCal();return}
+  if((t=e.target.closest('[data-d]'))){calSel=t.dataset.d;renderCal();var sh=$('calBody').querySelector('.selh');if(sh)sh.scrollIntoView({behavior:'smooth',block:'start'});return}
+  if((t=e.target.closest('[data-m]'))){calSel=t.dataset.m;calView='month';calTabs();renderCal();return}
+  if(e.target.closest('[data-addday]')){eventForm(null,calSel);return}
+  if((t=e.target.closest('[data-ee]'))){var ev=findEvent(t.dataset.ee);if(ev)eventForm(ev);return}
+  if((t=e.target.closest('[data-de]'))){var id=t.dataset.de;ask('要刪除這個活動嗎？','刪除',function(){api('deleteEvent',id).then(refreshCal,function(){done('沒有刪除成功，請再試一次')})});return}
+  if((t=e.target.closest('[data-dd]'))){var id2=t.dataset.dd;ask('要刪除這個生日或紀念日嗎？','刪除',function(){api('deleteDay',id2).then(refreshCal,function(){done('沒有刪除成功，請再試一次')})})}});
+function eventForm(ev,date){
+  sheet('<h2>'+(ev?'修改活動':'新增活動')+'</h2><label for="eDate">哪一天</label><input type="date" id="eDate" value="'+esc(ev?ev.date:(date||day()))+'"><label for="eTime">幾點（可以不填）</label><input type="time" id="eTime" value="'+esc(ev?ev.time:'')+'"><label for="eText">要提醒什麼</label><input id="eText" maxlength="100" placeholder="例如：跨年聚餐、阿嬤回診 台大" value="'+esc(ev?ev.text:'')+'"><p class="hint">小幫手會在前一天到 LINE 群組提醒大家</p><div class="row2"><button class="btn" id="sNo">取消</button><button class="btn main" id="sYes">儲存</button></div>');
   $('sNo').onclick=closeSheet;
   $('sYes').onclick=function(){var d=$('eDate').value,t=$('eTime').value,x=$('eText').value.trim();if(!d||!x){done('請選日期，並寫要提醒什麼');return}
-    this.disabled=true;api('addEvent',d,t,x).then(function(){closeSheet();loadCal()},function(e){done(e.message||'沒有存成功，請再試一次')})}};
+    this.disabled=true;(ev?api('updateEvent',ev.id,d,t,x):api('addEvent',d,t,x)).then(function(){closeSheet();calSel=d;refreshCal()},function(e){done(e.message||'沒有存成功，請再試一次')})}}
+$('evAdd').onclick=function(){eventForm(null,calView==='day'||calView==='month'?calSel:null)};
 $('dayAdd').onclick=function(){var cal='國曆',kind='生日';
   var opt=function(n,a){var o='';for(var i=1;i<=n;i++)o+='<option'+(i===a?' selected':'')+'>'+i+'</option>';return o};
   sheet('<h2>新增生日或紀念日</h2><div class="seg" id="sKind"><button class="btn" data-k="生日" aria-pressed="true">🎂 生日</button><button class="btn" data-k="紀念日" aria-pressed="false">💝 紀念日</button></div><label for="dName" id="dNameL">誰的生日</label><input id="dName" maxlength="20" placeholder="例如：阿嬤"><label>用哪種日曆</label><div class="seg" id="sCal"><button class="btn" data-c="國曆" aria-pressed="true">國曆</button><button class="btn" data-c="農曆" aria-pressed="false">農曆</button></div><label>日期</label><div class="dm"><select id="dM" aria-label="月">'+opt(12,1)+'</select><select id="dD" aria-label="日">'+opt(31,1)+'</select><input id="dY" inputmode="numeric" maxlength="4" placeholder="出生年" aria-label="年（可不填）"></div><p class="hint">月、日，出生年可以不填（填了會算幾歲）。農曆生日小幫手會自動算每年是哪一天。</p><div class="row2"><button class="btn" id="sNo">取消</button><button class="btn main" id="sYes">儲存</button></div>');
@@ -517,7 +613,7 @@ $('dayAdd').onclick=function(){var cal='國曆',kind='生日';
   $('sNo').onclick=closeSheet;
   $('sYes').onclick=function(){var n=$('dName').value.trim(),y=$('dY').value.trim();if(!n){done(kind==='生日'?'請寫是誰的生日':'請寫是什麼紀念日');return}
     if(y&&!/^(19|20)\d\d$/.test(y)){done('年請寫 4 個數字，例如 1950，或空著');return}
-    this.disabled=true;api('addDay',n,kind,cal,$('dM').value,$('dD').value,y).then(function(){closeSheet();loadCal()},function(e){done(e.message||'沒有存成功，請再試一次')})}};
+    this.disabled=true;api('addDay',n,kind,cal,$('dM').value,$('dD').value,y).then(function(){closeSheet();refreshCal()},function(e){done(e.message||'沒有存成功，請再試一次')})}};
 
 /* ---------- 其他 ---------- */
 function setBig(on){document.documentElement.classList.toggle('big',on);store.set('big',on?'1':'0');$$('[data-big]').forEach(function(b){b.textContent=on?'字變小':'字放大'})}
