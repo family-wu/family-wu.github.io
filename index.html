@@ -533,7 +533,7 @@ function pd(s){var p=String(s).split('-');return new Date(+p[0],+p[1]-1,+p[2])}
 function ymd(d){return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2)}
 function addD(s,n){var d=pd(s);d.setDate(d.getDate()+n);return ymd(d)}
 function todayS(){return ymd(new Date())}
-function mdw(s){var d=pd(s);return(d.getMonth()+1)+'/'+d.getDate()+'（'+WD.charAt(d.getDay())+'）'}
+function mdw(s){var d=pd(s);return d.getFullYear()+'/'+(d.getMonth()+1)+'/'+d.getDate()+'（'+WD.charAt(d.getDay())+'）'}
 function inDays(s){var n=Math.round((pd(s)-pd(todayS()))/864e5);return n===0?'今天':n===1?'明天':n===2?'後天':n>0?n+' 天後':n===-1?'昨天':(-n)+' 天前'}
 function chipText(it){return ICON[it.kind]+(it.kind==='event'?(it.time?it.time.replace(/^0/,'')+' ':'')+it.text:(it.short||it.text))}
 function calTabs(){$$('#calTabs button').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.v===calView)})}
@@ -558,7 +558,7 @@ function renderMonth(Y){var d=pd(calSel),y=d.getFullYear(),m=d.getMonth(),first=
     if(its.length)h+='<span class="ics">'+its.slice(0,3).map(function(it){return ICON[it.kind]}).join('')+(its.length>3?'<em>+'+(its.length-3)+'</em>':'')+'</span>';
     h+='</button>'}
   var sd=pd(calSel),sits=Y.by[calSel]||[];
-  h+='</div>'+legend()+'<h2 class="selh">'+(sd.getMonth()+1)+' 月 '+sd.getDate()+' 日（'+WD.charAt(sd.getDay())+'）<small>'+inDays(calSel)+'</small></h2>'+dayList(sits);
+  h+='</div>'+legend()+'<h2 class="selh">'+sd.getFullYear()+' 年 '+(sd.getMonth()+1)+' 月 '+sd.getDate()+' 日（'+WD.charAt(sd.getDay())+'）<small>'+inDays(calSel)+'</small></h2>'+dayList(sits);
   $('calBody').innerHTML=h}
 function dayList(its){var h='';
   if(!its.length)h+='<p class="empty" style="margin:12px 0">這天還沒有事情</p>';
@@ -566,7 +566,7 @@ function dayList(its){var h='';
     (it.kind==='event'?'<div class="acts"><button class="btn x" data-ee="'+esc(it.id)+'">修改</button><button class="btn x" data-de="'+esc(it.id)+'">刪除</button></div>':(it.kind==='birthday'||it.kind==='anniv')&&!it.baby?'<button class="btn x" data-dd="'+esc(it.id)+'">刪除</button>':'')+'</div>'});
   return h+'<button class="big-btn" data-addday="1" style="margin-top:14px;font-size:1.05rem;min-height:64px">＋ 在這天新增活動</button>'}
 function renderDay(Y){var its=Y.by[calSel]||[],d=pd(calSel);
-  var h='<div class="cnav"><button class="btn" data-go="-1">◀</button><div class="dhead">'+(d.getMonth()+1)+' 月 '+d.getDate()+' 日（'+WD.charAt(d.getDay())+'）<br><small style="font-size:.85rem;color:var(--soft)">'+d.getFullYear()+' 年・'+inDays(calSel)+'</small></div><button class="btn" data-go="1">▶</button></div>';
+  var h='<div class="cnav"><button class="btn" data-go="-1">◀</button><div class="dhead"><span style="font-size:1rem">'+d.getFullYear()+' 年</span><br>'+(d.getMonth()+1)+' 月 '+d.getDate()+' 日（'+WD.charAt(d.getDay())+'）<br><small style="font-size:.85rem;color:var(--soft)">'+inDays(calSel)+'</small></div><button class="btn" data-go="1">▶</button></div>';
   h+=dayList(its)+'<button class="btn" data-go="0" style="width:100%;margin-top:12px">回到今天</button>';
   $('calBody').innerHTML=h}
 function renderYear(Y){var y=pd(calSel).getFullYear(),t=todayS();
